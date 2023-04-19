@@ -7,14 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @Slf4j
 public class CheckStockages {
-    public List<Integer> checkStocks(final List<Product> products, final List<Size> sizes, final HashMap<Integer, Stock> stocks ) {
+    public List<Integer> checkStocks(final List<Product> products, final List<Size> sizes, final Map<Integer, Stock> stocks ) {
         List<Product> finalProducts = new ArrayList<>();
         products.stream().forEach( product -> {
             if (isVisibilityProduct(product, sizes, stocks)) {
@@ -25,7 +25,7 @@ public class CheckStockages {
         return finalProducts.stream().map(Product::getId).toList();
     }
 
-    private boolean isVisibilityProduct(final Product product, final List<Size> sizes, final HashMap<Integer, Stock> stocks) {
+    private boolean isVisibilityProduct(final Product product, final List<Size> sizes, final Map<Integer, Stock> stocks) {
         AtomicBoolean show = new AtomicBoolean( false );
         AtomicBoolean haveSpecialWithStock = new AtomicBoolean( false );
         AtomicBoolean haveNotSpecialWithStock = new AtomicBoolean( false );
@@ -51,7 +51,7 @@ public class CheckStockages {
         return show.get();
     }
 
-    private boolean isSpecialWithStock(final Size size, final HashMap<Integer, Stock> stocks) {
+    private boolean isSpecialWithStock(final Size size, final Map<Integer, Stock> stocks) {
         final Stock stock = stocks.get( size.getId() );
         return stock.getQuantity()>0 && size.isSpecial();
     }
@@ -60,7 +60,7 @@ public class CheckStockages {
         return size.isBackSoon() && !size.isSpecial();
     }
 
-    private boolean isNotSpecialWithStock(final Size size, final HashMap<Integer, Stock> stocks) {
+    private boolean isNotSpecialWithStock(final Size size, final Map<Integer, Stock> stocks) {
         final Stock stock = stocks.get( size.getId() );
         return stock.getQuantity()>0 && !size.isSpecial();
     }

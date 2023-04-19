@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -19,7 +20,7 @@ public class VisibilityOrquestator {
 
     private List<Product> products;
     private List<Size> sizes;
-    private HashMap<Integer, Stock> stocks;
+    private Map<Integer, Stock> stocks;
 
     @Autowired
     private ProductsRepository productsRepository;

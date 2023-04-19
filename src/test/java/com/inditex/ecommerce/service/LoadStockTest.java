@@ -11,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith( MockitoExtension.class )
-public class LoadStockTest {
+class LoadStockTest {
     private static final Integer SIZE_ID= 17;
     @InjectMocks
     private LoadStocks loadStocks;
@@ -27,7 +28,7 @@ public class LoadStockTest {
     @Test
     void whenLoadStock_thenCorrect()  {
         when( stocksRepository.findAll() ).thenReturn( Arrays.asList( new Stock( SIZE_ID,0 )) );
-        HashMap<Integer, Stock> stock = loadStocks.getStocks();
+        Map<Integer, Stock> stock = loadStocks.getStocks();
 
         assertNotNull( stock );
         assertEquals(SIZE_ID, stock.get( SIZE_ID ).getSizeId() );
