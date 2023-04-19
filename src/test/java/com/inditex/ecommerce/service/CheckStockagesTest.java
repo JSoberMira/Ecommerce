@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,11 +22,12 @@ class CheckStockagesTest {
 
     private static final List<Integer> MESSAGE_PRODUCTS= Arrays.asList( 5, 6, 1, 3);
     private static final List<Integer> MESSAGE_PRODUCTS_SPECIAL= Arrays.asList(8);
+    private static final List<Integer> MESSAGE_NO_SIZE= Arrays.asList();
 
     @Test
     void  whenCheckStocks_getAString() {
         List <Product> products = mockProductList();
-        List <Size> sizes = mockSizeList();
+        Map<Integer, List<Size>> sizes = mockSizeMap();
         HashMap<Integer, Stock> stocks = mockStockHash();
 
         List<Integer> result = checkStockages.checkStocks( products, sizes, stocks );
@@ -36,10 +38,13 @@ class CheckStockagesTest {
     void  whenCheckStocksSpecial_getAString() {
         List <Product> products = new ArrayList<>();
         products.add( new Product(8,18) );
-
-        List<Size> sizes = new ArrayList<>();
-        sizes.add( new Size(73,8, false, true) );
-        sizes.add( new Size(74,8, false, false) );
+        Size size_1 = new Size(73,8, false, true);
+        Size size_2 = new Size(74,8, false, false);
+        List <Size> sizeList = new ArrayList<>();
+        sizeList.add( size_1 );
+        sizeList.add(size_2);
+        Map<Integer, List<Size>> sizes = new HashMap<>();
+        sizes.put( 8, sizeList );
 
         HashMap<Integer, Stock> stocks = new HashMap<>();
         stocks.put(73, new Stock( 73, 1 ) );
@@ -49,32 +54,58 @@ class CheckStockagesTest {
         assertEquals( MESSAGE_PRODUCTS_SPECIAL, result );
     }
 
+    @Test
+    void  whenCheckProductWithoutSize_getAString() {
+        List <Product> products = new ArrayList<>();
+        products.add( new Product(8,18) );
+        Map<Integer, List<Size>> sizes = new HashMap<>();
+        HashMap<Integer, Stock> stocks = new HashMap<>();
 
-    private List<Size> mockSizeList() {
-        List<Size> sizeList = new ArrayList<>();
+        List<Integer> result = checkStockages.checkStocks( products, sizes, stocks );
+        assertEquals( MESSAGE_NO_SIZE, result );
+    }
 
-        sizeList.add( new Size(11,1, true, false) );
-        sizeList.add( new Size(12,1, false, false) );
-        sizeList.add( new Size(13,1, true, false) );
-        sizeList.add( new Size(21,2, false, false) );
-        sizeList.add( new Size(22,2, false, false) );
-        sizeList.add( new Size(23,2, true, true) );
-        sizeList.add( new Size(31,3, true, false) );
-        sizeList.add( new Size(32,3, false, false) );
-        sizeList.add( new Size(33,3, false, false) );
-        sizeList.add( new Size(41,4, false, false) );
-        sizeList.add( new Size(42,4, false, false) );
-        sizeList.add( new Size(43,4, false, false) );
-        sizeList.add( new Size(44,4, true, true) );
-        sizeList.add( new Size(51,5, true, false) );
-        sizeList.add( new Size(52,5, false, false) );
-        sizeList.add( new Size(53,5, false, false) );
-        sizeList.add( new Size(54,5, true, true) );
-        sizeList.add( new Size(61,6, false, false) );
-        sizeList.add( new Size(62,6, false, true) );
-        sizeList.add( new Size(71,7, false, false) );
-        sizeList.add( new Size(72,7, false, false) );
-        return sizeList;
+
+
+    private Map<Integer, List<Size>> mockSizeMap() {
+        Map<Integer, List<Size>> sizes = new HashMap<>();
+        List<Size> sizeList_1 = new ArrayList<>();
+        sizeList_1.add( new Size(11,1, true, false) );
+        sizeList_1.add( new Size(12,1, false, false) );
+        sizeList_1.add( new Size(13,1, true, false) );
+        sizes.put( 1, sizeList_1 );
+        List<Size> sizeList_2 = new ArrayList<>();
+        sizeList_2.add( new Size(21,2, false, false) );
+        sizeList_2.add( new Size(22,2, false, false) );
+        sizeList_2.add( new Size(23,2, true, true) );
+        sizes.put( 2, sizeList_2 );
+        List<Size> sizeList_3 = new ArrayList<>();
+        sizeList_3.add( new Size(31,3, true, false) );
+        sizeList_3.add( new Size(32,3, true, false) );
+        sizeList_3.add( new Size(33,3, false, false) );
+        sizes.put( 3, sizeList_3 );
+        List<Size> sizeList_4 = new ArrayList<>();
+        sizeList_4.add( new Size(41,4, false, false) );
+        sizeList_4.add( new Size(42,4, false, false) );
+        sizeList_4.add( new Size(43,4, false, false) );
+        sizeList_4.add( new Size(44,4, true, true) );
+        sizes.put( 4, sizeList_4 );
+        List<Size> sizeList_5 = new ArrayList<>();
+        sizeList_5.add( new Size(51,5, true, false) );
+        sizeList_5.add( new Size(52,5, false, false) );
+        sizeList_5.add( new Size(53,5, false, false) );
+        sizeList_5.add( new Size(54,5, true, true) );
+        sizes.put( 5, sizeList_5 );
+        List<Size> sizeList_6 = new ArrayList<>();
+        sizeList_6.add( new Size(61,6, false, false) );
+        sizeList_6.add( new Size(62,6, false, true) );
+        sizes.put( 6, sizeList_6 );
+        List<Size> sizeList_7 = new ArrayList<>();
+        sizeList_7.add( new Size(71,7, false, false) );
+        sizeList_7.add( new Size(72,7, false, false) );
+        sizes.put( 7, sizeList_7 );
+
+        return sizes;
     }
 
     private HashMap<Integer, Stock> mockStockHash() {

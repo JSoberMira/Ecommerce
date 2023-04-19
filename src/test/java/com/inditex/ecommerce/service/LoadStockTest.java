@@ -7,10 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,8 +27,9 @@ class LoadStockTest {
     private StocksRepository stocksRepository;
     @Test
     void whenLoadStock_thenCorrect()  {
-        when( stocksRepository.findAll() ).thenReturn( Arrays.asList( new Stock( SIZE_ID,0 )) );
-        Map<Integer, Stock> stock = loadStocks.getStocks();
+        List<Integer> sizesId = new ArrayList<>();
+        when( stocksRepository.findBySizeIdIn(sizesId) ).thenReturn( Arrays.asList( new Stock( SIZE_ID,0 )) );
+        Map<Integer, Stock> stock = loadStocks.getStocks(sizesId);
 
         assertNotNull( stock );
         assertEquals(SIZE_ID, stock.get( SIZE_ID ).getSizeId() );

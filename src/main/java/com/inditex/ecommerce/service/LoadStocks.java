@@ -15,9 +15,9 @@ public class LoadStocks {
     @Autowired
     private StocksRepository stocksRepository;
 
-    public Map<Integer, Stock> getStocks() {
+    public Map<Integer, Stock> getStocks(final List<Integer> sizeIds) {
         Map<Integer, Stock> stocks = new HashMap<>();
-        List<Stock> stockList = stocksRepository.findAll();
+        List<Stock> stockList = stocksRepository.findBySizeIdIn( sizeIds );
         stockList.stream().forEach( stock -> stocks.put( stock.getSizeId(), stock) );
         return stocks;
     }

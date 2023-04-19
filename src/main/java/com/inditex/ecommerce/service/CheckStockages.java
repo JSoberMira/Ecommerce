@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 @Slf4j
 public class CheckStockages {
-    public List<Integer> checkStocks(final List<Product> products, final List<Size> sizes, final Map<Integer, Stock> stocks ) {
+    public List<Integer> checkStocks(final List<Product> products, final Map<Integer, List<Size>> sizes, final Map<Integer, Stock> stocks ) {
         List<Product> finalProducts = new ArrayList<>();
         products.stream().forEach( product -> {
             if (isVisibilityProduct(product, sizes, stocks)) {
@@ -25,12 +25,11 @@ public class CheckStockages {
         return finalProducts.stream().map(Product::getId).toList();
     }
 
-    private boolean isVisibilityProduct(final Product product, final List<Size> sizes, final Map<Integer, Stock> stocks) {
+    private boolean isVisibilityProduct(final Product product, final Map<Integer, List<Size>> sizes, final Map<Integer, Stock> stocks) {
         AtomicBoolean show = new AtomicBoolean( false );
         AtomicBoolean haveSpecialWithStock = new AtomicBoolean( false );
         AtomicBoolean haveNotSpecialWithStock = new AtomicBoolean( false );
-        List<Size> sizesProduct = sizes.stream()
-                .filter( size -> size.getProductId() == product.getId() ).toList();
+        List<Size> sizesProduct = ( sizes.containsKey( product.getId() ) ? sizes.get( product.getId() ) : new ArrayList<>() );
         sizesProduct.stream().forEach( size -> {
             if (stocks.containsKey( size.getId() ) ) {
                 if (isBackSoon( size ) ) {

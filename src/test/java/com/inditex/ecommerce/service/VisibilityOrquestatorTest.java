@@ -11,9 +11,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -28,22 +31,22 @@ class VisibilityOrquestatorTest {
     @Mock
     private ProductsRepository productsRepository;
     @Mock
-    private SizesRepository sizesRepository;
-    @Mock
     private LoadStocks loadStocks;
-
+    @Mock
+    private LoadSizes loadSizes;
     @Mock
     private CheckStockages checkStockages;
 
     @Test
     void whenGetVisibilityProducts_getAIntegerList() {
         List <Product> products = mockProductList();
-        List <Size> sizes = mockSizeList();
+        Map< Integer, List<Size>> sizes = mockSizeMap();
         HashMap<Integer, Stock> stocks = mockStockHash();
-
+        List<Integer> productsId = products.stream().map( Product::getId ).collect( Collectors.toList());
+        List<Integer> sizesId = new ArrayList<>();
         when( productsRepository.findAll() ).thenReturn( products );
-        when( sizesRepository.findAll() ).thenReturn( sizes );
-        when( loadStocks.getStocks( )).thenReturn( stocks );
+        when( loadSizes.getSizes( productsId, sizesId ) ).thenReturn( sizes );
+        when( loadStocks.getStocks( sizesId )).thenReturn( stocks );
         when( checkStockages.checkStocks( products, sizes, stocks )).thenReturn( MESSAGE_PRODUCTS );
 
         List<Integer> result = visibilityOrquestatorService.getVisibilityProducts();
@@ -60,9 +63,11 @@ class VisibilityOrquestatorTest {
         assertEquals( 0, result.size());
     }
 
-    private List<Size> mockSizeList() {
+    private Map< Integer, List<Size>> mockSizeMap() {
         Size size = new Size(1,1, false, false);
-        return Arrays.asList( size );
+        Map< Integer, List<Size>> sizeMap = new HashMap<>();
+        sizeMap.put( 1, Arrays.asList( size ) );
+        return sizeMap;
     }
 
     private HashMap<Integer, Stock> mockStockHash() {
